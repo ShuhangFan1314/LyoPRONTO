@@ -609,7 +609,7 @@ def main():
             # 生成设计空间数据
             pressures = np.linspace(50, 300, 10)
             temperatures = np.linspace(params['thermal_params']['Tc'] - 15, params['thermal_params']['Tc'] - 1, 10)
-            drying_times = np.zeros((len(temperatures), len(pressures))
+            drying_times = np.zeros((len(temperatures), len(pressures)))
             safe_zone = np.zeros((len(temperatures), len(pressures)))
             
             # 填充数据 (简化模型)
