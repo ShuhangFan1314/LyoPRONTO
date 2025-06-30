@@ -91,18 +91,22 @@ def calculate_collapse_temp(protein_conc, excipients, salt_content):
 def calculate_drying_time(fill_depth, protein_conc, kv):
     """预测干燥时间"""
     # 基础干燥时间 (小时)
-    base_time = 20
+    base_time = 20.0
     
     # 灌装高度影响 (非线性)
-    height_factor = 1 + 0.5 * (fill_depth - 1.0) ** 1.5
-    
+    if fill_depth > 1.0:
+        height_factor = 1 + 0.5 * (fill_depth - 1.0) ** 1.5
+    else
+        height_factor = 1.0
+        
     # 蛋白浓度影响
     conc_factor = 1 + 0.02 * protein_conc
     
-    # 传热系数影响
-    kv_factor = 1.5 - 0.5 * kv  # kv值在0-1之间
+    # 传热系数影响 (确保kv在0-1之间)
+    kv_factor = 1.5 - 0.5 * min(max(kv, 0.0), 1.0)  # kv值在0-1之间
     
-    return base_time * height_factor * conc_factor * kv_factor
+    total_time = base_time * height_factor * conc_factor * kv_factor
+    return float(total_time)
 
 def predict_thermal_params(protein_type, protein_conc, excipients):
     """预测热力学参数"""
@@ -232,10 +236,26 @@ def main():
             
             # 一次干燥
             st.markdown("**一次干燥**")
-            primary_temp = st.slider("板层温度 (°C)", -50.0, thermal_params["Tc"]-5, thermal_params["Tc"]-10)
+            # 确保传递浮点数参数
+            kv_value = 0.5  # 默认传热系数值
+            default_drying_time = calculate_drying_time(float(fill_depth), float(protein_conc), kv_value)
+            primary_temp = st.slider(
+                "板层温度 (°C)", 
+                -50.0, 
+                float(thermal_params["Tc"])-5,  # 确保是浮点数
+                float(thermal_params["Tc"])-10  # 确保是浮点数
+            )
             st.info(f"安全操作范围: 低于Tc {thermal_params['Tc']:.1f}°C")
+    
             primary_pressure = st.slider("腔室压力 (mTorr)", 50, 300, 100)
-            primary_time = st.number_input("干燥时间 (小时)", 1.0, 100.0, calculate_drying_time(fill_depth, protein_conc, 0.5))
+    
+            # 使用浮点数作为参数
+            primary_time = st.number_input(
+                "干燥时间 (小时)", 
+                1.0, 
+                100.0, 
+                float(default_drying_time)  # 确保是浮点数
+            )
         
         with col2:
             # 二次干燥
