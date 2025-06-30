@@ -145,27 +145,25 @@ def primary_drying_calculator():
         
         # 产品容器参数
         st.markdown("**Vial Parameters**")
-        vial_area = st.number_input("Vial Area (cm²)", value=3.8, format="%.4f")
-        fill_volume = st.number_input("Fill Volume (mL)", value=2.0, format="%.2f")
-        product_area = st.number_input("Product Area (cm²)", value=3.14, format="%.2f")
+        vial_area = st.number_input("Vial Area (cm²)", value=3.8, min_value=0.1, format="%.4f")
+        fill_volume = st.number_input("Fill Volume (mL)", value=2.0, min_value=0.1, format="%.2f")
+        product_area = st.number_input("Product Area (cm²)", value=3.14, min_value=0.1, format="%.2f")
         critical_temp = st.number_input("Critical Product Temperature (°C)", value=-5.0, format="%.1f")
-        solid_content = st.number_input("Solid Content (g/mL)", value=0.1, format="%.3f")
+        solid_content = st.number_input("Solid Content (g/mL)", value=0.1, min_value=0.01, format="%.3f")
         
         # Vial Heat Transfer
         st.markdown("**Vial Heat Transfer**")
         heat_transfer_option = st.radio("Select", ["Known", "Unknown"], index=0, horizontal=True)
         if heat_transfer_option == "Known":
-            kc = st.number_input("Kc", value=0.000275, format="%.6f")
-            kp = st.number_input("Kp", value=0.000893, format="%.6f")
-            kd = st.number_input("KD", value=0.46, format="%.2f")
+            kc = st.number_input("Kc", value=0.000275, min_value=0.0, format="%.6f")
+            kp = st.number_input("Kp", value=0.000893, min_value=0.0, format="%.6f")
+            kd = st.number_input("KD", value=0.46, min_value=0.0, format="%.2f")
         else:
-            from_val = st.number_input("From", value=0.00106, format="%.5f")
-            to_val = st.number_input("To", value=0.00108, format="%.5f")
-            step_val = st.number_input("Step", value=-0.999999, format="%.6f")
+            st.warning("Unknown heat transfer option is not yet implemented")
         
         # 时间参数
         st.markdown("**Time Parameters**")
-        time_step = st.number_input("Time Step (hr)", value=0.01, format="%.2f")
+        time_step = st.number_input("Time Step (hr)", value=0.01, min_value=0.001, format="%.4f")
     
     # 右侧参数输入区（控制参数）
     with col2:
@@ -175,26 +173,26 @@ def primary_drying_calculator():
         st.markdown("**Product Resistance**")
         resistance_option = st.radio("Select", ["Known", "Unknown"], index=0, horizontal=True, key="resistance_option")
         if resistance_option == "Known":
-            r0 = st.number_input("R₀", value=1.4, format="%.1f")
-            a1 = st.number_input("A₁", value=16.0, format="%.1f")
-            a2 = st.number_input("A₂", value=0.0, format="%.1f")
+            r0 = st.number_input("R₀", value=1.4, min_value=0.1, format="%.1f")
+            a1 = st.number_input("A₁", value=16.0, min_value=0.1, format="%.1f")
+            a2 = st.number_input("A₂", value=0.0, min_value=0.0, format="%.1f")
         else:
-            uploaded_file = st.file_uploader("Upload Vial Bottom Temperature File (temperature.txt)")
+            st.warning("Unknown resistance option is not yet implemented")
         
         # 初始条件
         st.markdown("**Initial Conditions**")
         initial_shelf_temp = st.number_input("Initial Shelf Temperature (°C)", value=-35.0, format="%.1f")
-        shelf_temp_ramp = st.number_input("Shelf Temperature Ramp Rate (°C/min)", value=1.0, format="%.1f")
-        chamber_pressure_ramp = st.number_input("Chamber Pressure Ramp Rate (Torr/min)", value=0.5, format="%.1f")
+        shelf_temp_ramp = st.number_input("Shelf Temperature Ramp Rate (°C/min)", value=1.0, min_value=0.1, format="%.1f")
+        chamber_pressure_ramp = st.number_input("Chamber Pressure Ramp Rate (Torr/min)", value=0.5, min_value=0.1, format="%.1f")
         
         # 设备能力
         st.markdown("**Equipment Capability**")
         a_val = st.number_input("a (kg/hr)", value=-0.182, format="%.3f")
-        b_val = st.number_input("b (kg/(hr·Torr))", value=11.7, format="%.1f")
+        b_val = st.number_input("b (kg/(hr·Torr))", value=11.7, min_value=0.1, format="%.1f")
         
         # 其他参数
         st.markdown("**Other Parameters**")
-        num_vials = st.number_input("Number of Vials", value=398)
+        num_vials = st.number_input("Number of Vials", value=398, min_value=1)
     
     # 过程控制参数区（位于左右栏下方）
     st.subheader("Process Control Parameters")
@@ -202,11 +200,11 @@ def primary_drying_calculator():
     with ctrl_col1:
         shelf_temp = st.number_input("Shelf Temperature (°C)", value=20.0, format="%.1f")
     with ctrl_col2:
-        temp_hold_time = st.number_input("Temperature Hold Time (min)", value=1800, format="%d")
+        temp_hold_time = st.number_input("Temperature Hold Time (min)", value=1800, min_value=1, format="%d")
     with ctrl_col3:
-        chamber_pressure = st.number_input("Chamber Pressure (Torr)", value=0.15, format="%.2f")
+        chamber_pressure = st.number_input("Chamber Pressure (Torr)", value=0.15, min_value=0.01, format="%.2f")
     with ctrl_col4:
-        pressure_hold_time = st.number_input("Pressure Hold Time (min)", value=1800, format="%d")
+        pressure_hold_time = st.number_input("Pressure Hold Time (min)", value=1800, min_value=1, format="%d")
     
     # 操作按钮区
     st.markdown("---")
@@ -214,7 +212,7 @@ def primary_drying_calculator():
     with col_btn1:
         calculate_btn = st.button("Calculate", type="primary", use_container_width=True)
     with col_btn2:
-        download_btn = st.button("Download Result", use_container_width=True)
+        download_btn = st.button("Download Result", use_container_width=True, disabled=True)
     
     # 结果展示区
     if calculate_btn:
@@ -228,36 +226,29 @@ def primary_drying_calculator():
         product = {
             'cSolid': solid_content,
             'T_pr_crit': critical_temp,
-            'R0': r0 if resistance_option == "Known" else 1.4,
-            'A1': a1 if resistance_option == "Known" else 16.0,
-            'A2': a2 if resistance_option == "Known" else 0.0
+            'R0': r0,
+            'A1': a1,
+            'A2': a2
         }
         
         ht = {
-            'KC': kc if heat_transfer_option == "Known" else 0.000275,
-            'KP': kp if heat_transfer_option == "Known" else 0.000893,
-            'KD': kd if heat_transfer_option == "Known" else 0.46
+            'KC': kc,
+            'KP': kp,
+            'KD': kd
         }
         
+        # 注意：压力单位为Torr，时间单位为min
         Pchamber = {
-            'setpt': [chamber_pressure],
+            'setpt': [chamber_pressure],  # 设定点数组
             'ramp_rate': chamber_pressure_ramp,
-            'min': 0.01,
-            'dt_setpt': [pressure_hold_time]
+            'dt_setpt': [pressure_hold_time]  # 每个设定点的持续时间(min)
         }
         
         Tshelf = {
             'init': initial_shelf_temp,
-            'setpt': [shelf_temp],
+            'setpt': [shelf_temp],  # 设定点数组
             'ramp_rate': shelf_temp_ramp,
-            'min': -50,
-            'max': 50,
-            'dt_setpt': [temp_hold_time]
-        }
-        
-        eq_cap = {
-            'a': a_val,
-            'b': b_val
+            'dt_setpt': [temp_hold_time]  # 每个设定点的持续时间(min)
         }
         
         # 调用干燥计算函数
@@ -273,12 +264,17 @@ def primary_drying_calculator():
                     dt=time_step
                 )
                 
+                # 检查输出是否有效
+                if output is None or len(output) == 0:
+                    st.error("Calculation returned no results. Please check input parameters.")
+                    return
+                
                 # 提取结果
                 time_points = output[:, 0]
                 T_sub = output[:, 1]
                 T_bot = output[:, 2]
                 T_sh = output[:, 3]
-                P_ch = output[:, 4]
+                P_ch = output[:, 4]  # 注意：此压力单位为mTorr
                 sub_rate = output[:, 5]
                 percent_dried = output[:, 6]
                 
@@ -317,9 +313,14 @@ def primary_drying_calculator():
                 )
                 st.plotly_chart(fig, use_container_width=True)
                 
-                # 下载结果
-                csv_data = format_csv(df)
-                st.markdown(create_download_link(csv_data.encode(), "primary_drying_results.csv"), unsafe_allow_html=True)
+                # 添加下载功能
+                csv = df.to_csv(index=False).encode('utf-8')
+                st.download_button(
+                    label="Download Results as CSV",
+                    data=csv,
+                    file_name="primary_drying_results.csv",
+                    mime="text/csv"
+                )
                 
             except Exception as e:
                 st.error(f"Error during calculation: {str(e)}")
