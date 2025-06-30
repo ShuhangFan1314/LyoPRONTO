@@ -46,7 +46,7 @@ VIAL_SIZES = {
     "20R": {"diameter": 30.0, "height": 35.0, "wall_thickness": 1.2, "bottom_thickness": 1.0, "max_volume": 25.0}
 }
 
-# 蛋白类型关键参数数据库
+# 蛋白类型关键参数数据库,需要进行调整
 PROTEIN_DATABASE = {
     "单克隆抗体": {"Tc": -32, "Tg": -40, "R0": 1.8, "A1": 18.0},
     "疫苗": {"Tc": -28, "Tg": -35, "R0": 1.2, "A1": 12.0},
