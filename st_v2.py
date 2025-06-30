@@ -96,7 +96,7 @@ def calculate_drying_time(fill_depth, protein_conc, kv):
     # 灌装高度影响 (非线性)
     if fill_depth > 1.0:
         height_factor = 1 + 0.5 * (fill_depth - 1.0) ** 1.5
-    else
+    else:
         height_factor = 1.0
         
     # 蛋白浓度影响
