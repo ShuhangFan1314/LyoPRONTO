@@ -163,7 +163,7 @@ def main():
     """, unsafe_allow_html=True)
     
     # 创建导航栏项目
-    nav_items = ["Primary Drying Calculator", "Optimizer", "Design Space Generator", "Freezing Calculator"]
+    nav_items = ["Primary Drying Calculator", "Optimizer"]
     selected_nav = st.radio("", nav_items, horizontal=True, label_visibility="collapsed")
     
     if selected_nav == "Primary Drying Calculator":
