@@ -30,7 +30,7 @@ st.set_page_config(
 
 # 理论模型参数
 CRYSTALLINE_EXCIPIENTS = ["甘露醇", "甘氨酸", "山梨醇"]
-AMORPHOUS_EXCIPIENTS = ["蔗糖", "海藻糖", "右旋糖酐", "PVP"]
+AMORPHOUS_EXCIPIENTS = ["蔗糖", "海藻糖"]
 SALT_EFFECTS = {
     "NaCl": -30,  # °C/Torr per 1% concentration
     "KCl": -20,
@@ -235,7 +235,7 @@ def main():
             primary_temp = st.slider("板层温度 (°C)", -50.0, thermal_params["Tc"]-5, thermal_params["Tc"]-10)
             st.info(f"安全操作范围: 低于Tc {thermal_params['Tc']:.1f}°C")
             primary_pressure = st.slider("腔室压力 (mTorr)", 50, 300, 100)
-            primary_time = st.number_input("干燥时间 (小时)", 1.0, 100.0, calculate_drying_time(fill_depth, protein_conc, 0.5))
+            primary_time = st.number_input("干燥时间 (小时)", 1, 100, calculate_drying_time(fill_depth, protein_conc, 0.5))
         
         with col2:
             # 二次干燥
